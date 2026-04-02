@@ -15,7 +15,7 @@ export default function ReviewCard({ review, onVoted, onReviewClick }) {
   const palette = SCORE_COLORS[review.score] ?? SCORE_COLORS[3];
 
   return (
-    <article className="rounded-xl border border-[#e5e5e5] bg-white p-5 sm:p-6 hover:border-[#d4d4d4] transition-all hover:shadow-sm group">
+    <article className="rounded-xl border border-border bg-card p-5 sm:p-6 hover:border-border-strong transition-all hover:shadow-sm group">
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
         <div className="flex items-center gap-3 min-w-0">
           <div className="flex -space-x-3 group-hover:-space-x-1 transition-all">
@@ -24,19 +24,19 @@ export default function ReviewCard({ review, onVoted, onReviewClick }) {
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 mb-0.5">
-              <span className="text-[10px] uppercase tracking-wider font-semibold text-[#a3a3a3]">Subject</span>
+              <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">Subject</span>
               <button 
                 onClick={() => onReviewClick?.(review.subject)}
-                className="text-xs font-mono font-medium text-[#0a0a0a] truncate hover:text-[#2563eb] hover:underline transition-colors"
+                className="text-xs font-mono font-medium text-foreground truncate hover:text-accent-blue hover:underline transition-colors"
               >
                 {shortenAddress(review.subject, 6)}
               </button>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] uppercase tracking-wider font-semibold text-[#a3a3a3]">By</span>
+              <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">By</span>
               <button 
                 onClick={() => onReviewClick?.(review.author)}
-                className="text-[11px] font-mono text-[#737373] truncate hover:text-[#2563eb] hover:underline transition-colors"
+                className="text-[11px] font-mono text-muted truncate hover:text-accent-blue hover:underline transition-colors"
               >
                 {shortenAddress(review.author, 4)}
               </button>
@@ -55,7 +55,7 @@ export default function ReviewCard({ review, onVoted, onReviewClick }) {
             />
             {review.score}/5 · {scoreLabel(review.score)}
           </span>
-          <time className="text-[11px] text-[#a3a3a3] font-medium">{formatTimestamp(review.timestamp)}</time>
+          <time className="text-[11px] text-muted-foreground font-medium">{formatTimestamp(review.timestamp)}</time>
         </div>
       </div>
 

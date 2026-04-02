@@ -52,15 +52,15 @@ export default function ReviewForm({ onSubmit, initialSubject = "" }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-xl border border-[#e5e5e5] bg-white p-5 sm:p-6 space-y-4">
+    <form onSubmit={handleSubmit} className="rounded-xl border border-border bg-card p-5 sm:p-6 space-y-4">
       <div className="w-full">
         <div className="flex items-center justify-between mb-1.5">
-          <label className="block text-xs font-medium text-[#737373]">Recipient Address (Subject)</label>
+          <label className="block text-xs font-medium text-muted">Recipient Address (Subject)</label>
           {address && subject !== address && (
             <button
               type="button"
               onClick={() => setSubject(address)}
-              className="text-[10px] text-[#2563eb] hover:underline"
+              className="text-[10px] text-accent-blue hover:underline"
             >
               Use my address
             </button>
@@ -73,12 +73,12 @@ export default function ReviewForm({ onSubmit, initialSubject = "" }) {
           placeholder="G…"
           spellCheck={false}
           disabled={!address || loading}
-          className="w-full h-9 px-3 rounded-lg border border-[#e5e5e5] bg-[#fafafa] text-sm font-mono placeholder-[#d4d4d4] focus:outline-none focus:ring-1 focus:ring-[#0f172a] focus:border-transparent transition disabled:opacity-50"
+          className="w-full h-9 px-3 rounded-lg border border-border bg-background text-sm font-mono placeholder-[#d4d4d4] focus:outline-none focus:ring-1 focus:ring-accent focus:border-transparent transition disabled:opacity-50"
         />
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-[#737373] mb-2">Score</label>
+        <label className="block text-xs font-medium text-muted mb-2">Score</label>
         <div className="flex gap-2">
           {SCORE_OPTIONS.map((s) => (
             <button
@@ -88,8 +88,8 @@ export default function ReviewForm({ onSubmit, initialSubject = "" }) {
               disabled={!address || loading}
               className={`flex-1 h-9 rounded-lg text-sm font-medium border transition-all ${
                 score === s
-                  ? "bg-[#0f172a] text-white border-[#0f172a]"
-                  : "bg-white text-[#737373] border-[#e5e5e5] hover:border-[#d4d4d4] hover:text-[#0a0a0a]"
+                  ? "bg-accent text-accent-foreground border-[#0f172a]"
+                  : "bg-card text-muted border-border hover:border-border-strong hover:text-foreground"
               } disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {s}
@@ -97,21 +97,21 @@ export default function ReviewForm({ onSubmit, initialSubject = "" }) {
           ))}
         </div>
         {score > 0 && (
-          <p className="mt-1.5 text-xs text-[#737373]">
+          <p className="mt-1.5 text-xs text-muted">
             {score}/5 — {scoreLabel(score)}
           </p>
         )}
       </div>
 
       <div>
-        <label className="block text-xs font-medium text-[#737373] mb-1.5">Review</label>
+        <label className="block text-xs font-medium text-muted mb-1.5">Review</label>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Describe your experience working with this address…"
           rows={4}
           disabled={!address || loading}
-          className="w-full px-3 py-2.5 rounded-lg border border-[#e5e5e5] bg-[#fafafa] text-sm placeholder-[#d4d4d4] focus:outline-none focus:ring-1 focus:ring-[#0f172a] focus:border-transparent resize-none transition disabled:opacity-50"
+          className="w-full px-3 py-2.5 rounded-lg border border-border bg-background text-sm placeholder-[#d4d4d4] focus:outline-none focus:ring-1 focus:ring-accent focus:border-transparent resize-none transition disabled:opacity-50"
         />
         <p className="mt-1 text-xs text-[#d4d4d4] text-right">{content.length} / min 20</p>
       </div>
@@ -119,13 +119,13 @@ export default function ReviewForm({ onSubmit, initialSubject = "" }) {
       {error && <p className="text-xs text-red-500">{error}</p>}
 
       {!address && (
-        <p className="text-xs text-[#737373]">Connect your wallet to submit a review.</p>
+        <p className="text-xs text-muted">Connect your wallet to submit a review.</p>
       )}
 
       <button
         type="submit"
         disabled={!canSubmit || loading}
-        className="w-full h-9 rounded-lg text-sm font-medium bg-[#0f172a] text-white hover:bg-[#1e293b] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full h-9 rounded-lg text-sm font-medium bg-accent border border-border text-accent-foreground hover:bg-accent-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {loading ? "Submitting…" : "Submit Review"}
       </button>

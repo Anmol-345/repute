@@ -48,7 +48,7 @@ export default function VoteButtons({ review, onVoted }) {
 
   return (
     <div className="flex items-center gap-2">
-      <div className="flex items-center gap-1.5 p-1 rounded-lg bg-[#fafafa] border border-[#f0f0f0]">
+      <div className="flex items-center gap-1.5 p-1 rounded-lg bg-background border border-[#f0f0f0]">
         <VoteBtn
           direction="up"
           count={counts.up}
@@ -92,7 +92,7 @@ function VoteBtn({ direction, count, active, loading, disabled, onClick }) {
           ? isUp
             ? "bg-emerald-50 border-emerald-200 text-emerald-700"
             : "bg-red-50 border-red-200 text-red-600"
-          : "bg-white border-[#e5e5e5] text-[#737373] hover:border-[#d4d4d4] hover:text-[#0a0a0a]"
+          : "bg-card border-border text-muted hover:border-border-strong hover:text-foreground"
       } disabled:opacity-40 disabled:cursor-not-allowed`}
     >
       {loading ? (

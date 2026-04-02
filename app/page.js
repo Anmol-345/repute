@@ -105,15 +105,15 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fafafa]">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar reputation={userReputation} />
 
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12">
         <div className="mb-10 text-center lg:text-left">
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-[#111111] mb-3">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground mb-3">
             Wallet Reputation System
           </h1>
-          <p className="text-base text-[#666666] max-w-2xl mx-auto lg:mx-0">
+          <p className="text-base text-muted max-w-2xl mx-auto lg:mx-0">
             On-chain trust scores and reviews for Stellar wallet addresses. Built on Soroban for verified accountability.
           </p>
         </div>
@@ -122,7 +122,7 @@ function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
           <div className="min-w-0">
-            <div className="flex items-center gap-1 mb-6 border-b border-[#e5e5e5]">
+            <div className="flex items-center gap-1 mb-6 border-b border-border">
               {["reviews", "submit"].map((tab) => (
                 <button
                   key={tab}
@@ -130,7 +130,7 @@ function App() {
                   className={`h-10 px-4 text-sm font-semibold capitalize border-b-2 -mb-px transition-all ${
                     activeTab === tab
                       ? "border-[#000000] text-[#000000]"
-                      : "border-transparent text-[#a3a3a3] hover:text-[#111111]"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {tab === "reviews" 
@@ -157,12 +157,12 @@ function App() {
               <div className="space-y-6">
                 {searchQuery && (
                   <div className="flex items-center justify-between px-1">
-                    <p className="text-xs text-[#737373] font-medium italic">
+                    <p className="text-xs text-muted font-medium italic">
                       Showing reviews for: <span className="font-mono text-[#000000]">{searchQuery}</span>
                     </p>
                     <button 
                       onClick={() => setSearchQuery("")}
-                      className="text-xs text-[#2563eb] hover:underline font-medium"
+                      className="text-xs text-accent-blue hover:underline font-medium"
                     >
                       Clear search
                     </button>
@@ -200,13 +200,13 @@ function App() {
         </div>
       </main>
 
-      <footer className="border-t border-[#e5e5e5] bg-white py-8">
+      <footer className="border-t border-border bg-card py-8">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex flex-col items-center sm:items-start">
-            <p className="text-sm font-bold text-[#111111]">Repute</p>
-            <p className="text-xs text-[#a3a3a3]">© 2026 Decentralized Reputation Protocol</p>
+            <p className="text-sm font-bold text-foreground">Repute</p>
+            <p className="text-xs text-muted-foreground">© 2026 Decentralized Reputation Protocol</p>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f5f5f5] text-[11px] font-bold text-[#666666]">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted-bg text-[11px] font-bold text-muted">
             <span className="w-2 h-2 rounded-full bg-[#10b981] animate-pulse" />
             STALLAR TESTNET · SOROBAN ACTIVE
           </div>
@@ -226,8 +226,8 @@ function StatsCard({ reviews, isFiltered }) {
   const uniqueAuthors = new Set(reviews.map((r) => r.author)).size;
 
   return (
-    <div className="rounded-xl border border-[#e5e5e5] bg-white p-5 shadow-sm">
-      <p className="text-xs font-bold uppercase tracking-wider text-[#a3a3a3] mb-5">{isFiltered ? "Search Result Stats" : "Global Network Stats"}</p>
+    <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
+      <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-5">{isFiltered ? "Search Result Stats" : "Global Network Stats"}</p>
       <div className="space-y-4">
         <Stat label="Total Reviews" value={reviews.length} />
         <Stat label="Avg. Score" value={avgScore} />
@@ -241,8 +241,8 @@ function StatsCard({ reviews, isFiltered }) {
 function Stat({ label, value }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-xs font-medium text-[#737373]">{label}</span>
-      <span className="text-sm font-bold tabular-nums text-[#111111]">{value}</span>
+      <span className="text-xs font-medium text-muted">{label}</span>
+      <span className="text-sm font-bold tabular-nums text-foreground">{value}</span>
     </div>
   );
 }
@@ -250,19 +250,19 @@ function Stat({ label, value }) {
 function WalletPrompt() {
   const { connect, connecting } = useWallet();
   return (
-    <div className="rounded-xl border-2 border-dashed border-[#e5e5e5] p-12 text-center bg-white">
-      <div className="w-12 h-12 bg-[#f5f5f5] rounded-full flex items-center justify-center mx-auto mb-4">
-        <svg className="w-6 h-6 text-[#a3a3a3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div className="rounded-xl border-2 border-dashed border-border p-12 text-center bg-card">
+      <div className="w-12 h-12 bg-muted-bg rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg className="w-6 h-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 9l-6 6m0-6l6 6" />
         </svg>
       </div>
-      <h3 className="text-base font-bold text-[#111111] mb-1">Authorization Required</h3>
-      <p className="text-sm text-[#737373] mb-6 max-w-xs mx-auto">Please connect your Freighter wallet to access the reputation ledger.</p>
+      <h3 className="text-base font-bold text-foreground mb-1">Authorization Required</h3>
+      <p className="text-sm text-muted mb-6 max-w-xs mx-auto">Please connect your Freighter wallet to access the reputation ledger.</p>
       <button
         onClick={connect}
         disabled={connecting}
-        className="h-10 px-6 rounded-lg text-sm font-bold bg-[#000000] text-white hover:bg-[#222222] transition-all disabled:opacity-50"
+        className="h-10 px-6 rounded-lg text-sm font-bold bg-accent border border-border text-accent-foreground hover:bg-accent-hover transition-all disabled:opacity-50"
       >
         {connecting ? "Connecting Ledger…" : "Connect Freighter"}
       </button>
