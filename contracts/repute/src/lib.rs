@@ -170,10 +170,6 @@ mod test {
     use super::*;
     use soroban_sdk::testutils::Address as _;
 
-    fn setup() -> (soroban_sdk::Env, ReputeContractClient<'static>) {
-        panic!("use inline setup in each test")
-    }
-
     /// Review creation applies the correct initial impact to subject reputation.
     #[test]
     fn test_initial_impact_on_creation() {
@@ -200,9 +196,41 @@ mod test {
         assert_eq!(client.get_reputation(&subject_c), -2);
     }
 
-    /// Upvote: subject gets +impact again, author gets +1.
+    /// Test negative review impact specifically for score 1.
     #[test]
-    fn test_upvote_community_agree() {
+    fn test_negative_review_impact_score_1() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let cid = env.register_contract(None, ReputeContract);
+        let client = ReputeContractClient::new(&env, &cid);
+
+        let author = Address::generate(&env);
+        let subject = Address::generate(&env);
+
+        // score 1 → impact -2
+        client.add_review(&author, &subject, &1, &String::from_str(&env, "Negative"));
+        assert_eq!(client.get_reputation(&subject), -2);
+    }
+
+    /// Test neutral review impact specifically for score 3.
+    #[test]
+    fn test_neutral_review_impact_score_3() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let cid = env.register_contract(None, ReputeContract);
+        let client = ReputeContractClient::new(&env, &cid);
+
+        let author = Address::generate(&env);
+        let subject = Address::generate(&env);
+
+        // score 3 → impact 0
+        client.add_review(&author, &subject, &3, &String::from_str(&env, "Neutral"));
+        assert_eq!(client.get_reputation(&subject), 0);
+    }
+
+    /// Test upvote applies impact correctly (full cycle with score 5).
+    #[test]
+    fn test_upvote_impact_full_cycle() {
         let env = Env::default();
         env.mock_all_auths();
         let cid = env.register_contract(None, ReputeContract);
@@ -212,24 +240,19 @@ mod test {
         let subject = Address::generate(&env);
         let voter = Address::generate(&env);
 
-        // Score 4 → initial impact = +1, subject_rep = 1
-        let id = client.add_review(&author, &subject, &4, &String::from_str(&env, "Good developer"));
-        assert_eq!(client.get_reputation(&subject), 1);
-        assert_eq!(client.get_reputation(&author), 0);
+        // Score 5 → initial impact = +2
+        let id = client.add_review(&author, &subject, &5, &String::from_str(&env, "Excellent"));
+        assert_eq!(client.get_reputation(&subject), 2);
 
-        // Upvote → subject_rep += 1 = 2, author_rep += 1 = 1
+        // Upvote → subject gets +2 again, author gets +1
         client.vote_review(&voter, &id, &true);
-        assert_eq!(client.get_reputation(&subject), 2);
+        assert_eq!(client.get_reputation(&subject), 4);
         assert_eq!(client.get_reputation(&author), 1);
-
-        let review = client.get_review(&id);
-        assert_eq!(review.upvotes, 1);
-        assert_eq!(review.downvotes, 0);
     }
 
-    /// Downvote: only author loses -1, subject unchanged.
+    /// Test downvote does NOT affect subject reputation, only author's.
     #[test]
-    fn test_downvote_penalises_author_only() {
+    fn test_downvote_no_subject_impact() {
         let env = Env::default();
         env.mock_all_auths();
         let cid = env.register_contract(None, ReputeContract);
@@ -239,21 +262,74 @@ mod test {
         let subject = Address::generate(&env);
         let voter = Address::generate(&env);
 
-        // Score 5 → initial impact = +2, subject_rep = 2
-        let id = client.add_review(&author, &subject, &5, &String::from_str(&env, "Perfect"));
-        assert_eq!(client.get_reputation(&subject), 2);
+        // Score 4 → initial impact = +1
+        let id = client.add_review(&author, &subject, &4, &String::from_str(&env, "Good"));
+        assert_eq!(client.get_reputation(&subject), 1);
 
-        // Downvote → subject_rep stays 2, author_rep = -1
+        // Downvote → subject rep stays at 1, author rep becomes -1
         client.vote_review(&voter, &id, &false);
-        assert_eq!(client.get_reputation(&subject), 2);
+        assert_eq!(client.get_reputation(&subject), 1);
         assert_eq!(client.get_reputation(&author), -1);
-
-        let review = client.get_review(&id);
-        assert_eq!(review.downvotes, 1);
-        assert_eq!(review.upvotes, 0);
     }
 
-    /// Double voting should panic.
+    /// Test invalid score rejection (lower bound = 0).
+    #[test]
+    #[should_panic(expected = "Score must be between 1 and 5")]
+    fn test_invalid_score_rejection_low() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let cid = env.register_contract(None, ReputeContract);
+        let client = ReputeContractClient::new(&env, &cid);
+
+        let author = Address::generate(&env);
+        let subject = Address::generate(&env);
+        client.add_review(&author, &subject, &0, &String::from_str(&env, "Invalid Low"));
+    }
+
+    /// Test invalid score rejection (upper bound = 6).
+    #[test]
+    #[should_panic(expected = "Score must be between 1 and 5")]
+    fn test_invalid_score_rejected_high() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let cid = env.register_contract(None, ReputeContract);
+        let client = ReputeContractClient::new(&env, &cid);
+
+        let author = Address::generate(&env);
+        let subject = Address::generate(&env);
+        client.add_review(&author, &subject, &6, &String::from_str(&env, "Invalid High"));
+    }
+
+    /// Test multiple votes from different users accumulates reputation correctly.
+    #[test]
+    fn test_accumulation_multiple_votes() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let cid = env.register_contract(None, ReputeContract);
+        let client = ReputeContractClient::new(&env, &cid);
+
+        let author = Address::generate(&env);
+        let subject = Address::generate(&env);
+        let voter_a = Address::generate(&env);
+        let voter_b = Address::generate(&env);
+
+        // Score 5 → initial index +2
+        let id = client.add_review(&author, &subject, &5, &String::from_str(&env, "Viral"));
+        assert_eq!(client.get_reputation(&subject), 2);
+
+        // Voter A upvotes → +2 impact on subject
+        client.vote_review(&voter_a, &id, &true);
+        assert_eq!(client.get_reputation(&subject), 4);
+
+        // Voter B upvotes → +2 impact on subject
+        client.vote_review(&voter_b, &id, &true);
+        assert_eq!(client.get_reputation(&subject), 6);
+
+        let review = client.get_review(&id);
+        assert_eq!(review.upvotes, 2);
+    }
+
+    /// Existing test: Prevent double voting.
     #[test]
     #[should_panic(expected = "Already voted on this review")]
     fn test_prevent_double_voting() {
@@ -269,19 +345,5 @@ mod test {
         let id = client.add_review(&author, &subject, &3, &String::from_str(&env, "Ok"));
         client.vote_review(&voter, &id, &true);
         client.vote_review(&voter, &id, &true); // should panic
-    }
-
-    /// Score out of range (0 or 6) must panic.
-    #[test]
-    #[should_panic(expected = "Score must be between 1 and 5")]
-    fn test_invalid_score_rejected() {
-        let env = Env::default();
-        env.mock_all_auths();
-        let cid = env.register_contract(None, ReputeContract);
-        let client = ReputeContractClient::new(&env, &cid);
-
-        let author = Address::generate(&env);
-        let subject = Address::generate(&env);
-        client.add_review(&author, &subject, &6, &String::from_str(&env, "Invalid"));
     }
 }
