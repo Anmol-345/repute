@@ -6,7 +6,7 @@ import { useState } from "react";
 import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar({ reputation }) {
-  const { address, connecting, connect, disconnect } = useWallet();
+  const { address, walletType, connecting, connect, disconnect } = useWallet();
   const [showDropdown, setShowDropdown] = useState(false);
 
   return (
@@ -51,10 +51,14 @@ export default function Navbar({ reputation }) {
                 {shortenAddress(address)}
               </button>
               {showDropdown && (
-                <div className="absolute right-0 mt-1.5 w-36 rounded-lg border border-border bg-card shadow-md py-1 z-50">
+                <div className="absolute right-0 mt-1.5 w-44 rounded-lg border border-border bg-card shadow-md py-1.5 z-50 overflow-hidden">
+                  <div className="px-3 py-1.5 border-b border-border mb-1">
+                    <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider mb-0.5">Connected via</p>
+                    <p className="text-xs font-semibold text-foreground capitalize">{walletType || 'Wallet'}</p>
+                  </div>
                   <button
                     onClick={() => { disconnect(); setShowDropdown(false); }}
-                    className="w-full text-left px-3 py-1.5 text-sm text-muted hover:text-foreground hover:bg-muted-bg transition-colors"
+                    className="w-full text-left px-3 py-2 text-sm text-muted hover:text-foreground hover:bg-muted-bg transition-colors"
                   >
                     Disconnect
                   </button>

@@ -142,19 +142,8 @@ function App() {
               ))}
             </div>
 
-            {activeTab === "submit" ? (
-              <ReviewForm 
-                initialSubject={formInitialSubject}
-                onSubmit={async (data) => { 
-                  await handleSubmit(data); 
-                  setActiveTab("reviews"); 
-                  setFormInitialSubject(""); 
-                }} 
-              />
-            ) : !address ? (
-              <WalletPrompt />
-            ) : (
-              <div className="space-y-6">
+            {activeTab === "reviews" ? (
+              <div className="space-y-6 lg:max-h-[calc(100vh-220px)] lg:overflow-y-auto scrollbar-hide pr-1">
                 {searchQuery && (
                   <div className="flex items-center justify-between px-1">
                     <p className="text-xs text-muted font-medium italic">
@@ -175,10 +164,25 @@ function App() {
                   onReviewClick={handleReviewClick}
                 />
               </div>
-            )}
+            ) : activeTab === "submit" ? (
+              <div className="lg:max-h-[calc(100vh-220px)] lg:overflow-y-auto scrollbar-hide pr-1">
+                <ReviewForm 
+                  initialSubject={formInitialSubject}
+                  onSubmit={async (data) => { 
+                    await handleSubmit(data); 
+                    setActiveTab("reviews"); 
+                    setFormInitialSubject(""); 
+                  }} 
+                />
+              </div>
+            ) : !address ? (
+              <div className="lg:max-h-[calc(100vh-220px)] lg:overflow-y-auto scrollbar-hide pr-1">
+                <WalletPrompt />
+              </div>
+            ) : null}
           </div>
 
-          <aside className="space-y-6">
+          <aside className="space-y-6 sticky top-24 self-start">
             {searchQuery && (
               <ReputationPanel
                 address={searchQuery}
@@ -258,13 +262,13 @@ function WalletPrompt() {
         </svg>
       </div>
       <h3 className="text-base font-bold text-foreground mb-1">Authorization Required</h3>
-      <p className="text-sm text-muted mb-6 max-w-xs mx-auto">Please connect your Freighter wallet to access the reputation ledger.</p>
+      <p className="text-sm text-muted mb-6 max-w-xs mx-auto">Please connect a supported Stellar wallet to access the reputation ledger.</p>
       <button
         onClick={connect}
         disabled={connecting}
         className="h-10 px-6 rounded-lg text-sm font-bold bg-accent border border-border text-accent-foreground hover:bg-accent-hover transition-all disabled:opacity-50"
       >
-        {connecting ? "Connecting Ledger…" : "Connect Freighter"}
+        {connecting ? "Connecting..." : "Connect Wallet"}
       </button>
     </div>
   );
