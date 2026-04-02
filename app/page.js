@@ -142,7 +142,11 @@ function App() {
               ))}
             </div>
 
-            {activeTab === "reviews" ? (
+            {!address ? (
+              <div className="lg:max-h-[calc(100vh-220px)] lg:overflow-y-auto scrollbar-hide pr-1">
+                <WalletPrompt />
+              </div>
+            ) : activeTab === "reviews" ? (
               <div className="space-y-6 lg:max-h-[calc(100vh-220px)] lg:overflow-y-auto scrollbar-hide pr-1">
                 {searchQuery && (
                   <div className="flex items-center justify-between px-1">
@@ -174,10 +178,6 @@ function App() {
                     setFormInitialSubject(""); 
                   }} 
                 />
-              </div>
-            ) : !address ? (
-              <div className="lg:max-h-[calc(100vh-220px)] lg:overflow-y-auto scrollbar-hide pr-1">
-                <WalletPrompt />
               </div>
             ) : null}
           </div>
