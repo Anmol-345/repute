@@ -13,7 +13,8 @@
 - **RPC URL**: `https://soroban-testnet.stellar.org`
 
 ## 🎥 Demo Video
-[Watch the Repute Demo on YouTube](https://youtu.be/your-video-link-here)
+[Watch the Repute Demo on YouTube](https://www.youtube.com/watch?v=txEMhr55mj0)
+[Presentation explaining app functionality](https://docs.google.com/presentation/d/17f1GCm_TyX1w5-_OiR8ffEw0Kqdn-a-K/edit?usp=sharing&ouid=115809135976796745965&rtpof=true&sd=true)
 
 ---
 
