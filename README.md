@@ -21,7 +21,7 @@
 
 | Dashboard Feed | Wallet Connection |
 | :---: | :---: |
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Wallet Modal](docs/screenshots/connect_wallet.png) |
+| ![Dashboard](./public/dashboard.png) | ![Wallet Modal](./public/connect_wallet.png) |
 
 ---
 
@@ -127,7 +127,7 @@ cargo test --target x86_64-pc-windows-msvc
 ```
 
 ### Verified Test Results
-![Test Execution](docs/screenshots/cargo_test_results.png)
+![Test Execution](./public/test.png)
 
 ```bash
 running 9 tests
