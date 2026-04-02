@@ -1,36 +1,150 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Repute: On-Chain Wallet Reputation System
 
-## Getting Started
+**Repute** is a decentralized reputation protocol built on the **Stellar Testnet** using **Soroban** smart contracts. It allows users to review Stellar wallet addresses, providing an on-chain "trust score" based on community-verified interactions.
 
-First, run the development server:
+![Stellar](https://img.shields.io/badge/Network-Stellar%20Testnet-blue)
+![Soroban](https://img.shields.io/badge/Engine-Soroban-green)
+![Next.js](https://img.shields.io/badge/Frontend-Next.js%2015-black)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Live Proof (Testnet)
+
+- **Contract ID**: `CDCVEDFOEHVDBYINQXAG3HRINEJH77WK67HX23C6BHRL5SAEC7I7X37L`
+- **Network Passphrase**: `Test SDF Network ; September 2015`
+- **RPC URL**: `https://soroban-testnet.stellar.org`
+
+## 🎥 Demo Video
+[Watch the Repute Demo on YouTube](https://youtu.be/your-video-link-here)
+
+---
+
+## 📸 Screenshots
+
+| Dashboard Feed | Wallet Connection |
+| :---: | :---: |
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Wallet Modal](docs/screenshots/connect_wallet.png) |
+
+---
+
+## ✨ Features
+
+### 🔐 Multi-Wallet Support
+Powered by the **Stellar Wallets Kit**, Repute supports a wide range of browser extensions:
+- **Freighter** (Default)
+- **xBull**
+- **Albedo**
+- **Hana**
+- **Lobstr**
+
+### 📊 Reputation Logic
+Scores and reputations are calculated on-chain using a transparent impact formula:
+- **Initial Impact**: `impact = (score - 3)`. 
+  - Score 5 = +2 reputation
+  - Score 3 = 0 reputation
+  - Score 1 = -2 reputation
+- **Upvote (AGREE)**:
+  - Subject's reputation increases by the review's `impact` again.
+  - Author's reputation increases by **+1** (reward for accurate reporting).
+- **Downvote (DISAGREE)**:
+  - Author's reputation decreases by **-1** (penalty for a misleading review).
+  - Subject's reputation remains unchanged (protection against malicious attacks).
+
+### 🎨 Premium UI/UX
+- **Interactive Feed**: Real-time review filtering and global reputation tracking.
+- **Glassmorphism Design**: Modern aesthetic with a focus on usability.
+- **Dark Mode Support**: Seamless theme switching with persistent preferences.
+- **Responsive Layout**: Sticky sidebars and independent scroll zones for the main feed.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 16.2.2 (App Router), Tailwind CSS v4, Lucide Icons.
+- **SDKs**: `@stellar/stellar-sdk`, `@creit-tech/stellar-wallets-kit`.
+- **Smart Contract**: Rust (Soroban SDK).
+
+---
+
+## 📂 Project Structure
+
+```text
+repute/
+├── app/                # Next.js App Router (Pages & Layouts)
+├── components/         # Reusable React UI Components
+├── contracts/
+│   └── repute/         # Soroban Smart Contract (Rust)
+│       ├── src/        # Contract logic & Unit Tests
+│       └── Cargo.toml  # Rust dependencies
+├── lib/
+│   ├── wallet.js       # Stellar Wallets Kit Integration
+│   └── contract.js     # Soroban RPC & Transaction Logic
+├── public/             # Static Assets & Icons
+├── .env                # Environment Configuration
+└── README.md           # Project Documentation
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🏗️ Getting Started
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prerequisites
+- Node.js 18+
+- [Stellar Wallet Extension](https://www.stellar.org/freighter/)
 
-## Learn More
+### Local Installation
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/Anmol-345/repute.git
+   cd repute
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. **Configure Environment**:
+   Create a `.env` file in the root (matching the provided proof above):
+   ```env
+   NEXT_PUBLIC_STELLAR_NETWORK=TESTNET
+   NEXT_PUBLIC_SOROBAN_RPC_URL=https://soroban-testnet.stellar.org
+   NEXT_PUBLIC_HORIZON_URL=https://horizon-testnet.stellar.org
+   NEXT_PUBLIC_SOROBAN_CONTRACT_ID=CDCVEDFOEHVDBYINQXAG3HRINEJH77WK67HX23C6BHRL5SAEC7I7X37L
+   NEXT_PUBLIC_NETWORK_PASSPHRASE="Test SDF Network ; September 2015"
+   ```
 
-## Deploy on Vercel
+4. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Running Smart Contract Tests
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+To verify the reputation logic, navigate to the contract directory and run Rust unit tests:
+```bash
+cd contracts/repute
+cargo test --target x86_64-pc-windows-msvc
+```
+
+### Verified Test Results
+![Test Execution](docs/screenshots/cargo_test_results.png)
+
+```bash
+running 9 tests
+test test::test_neutral_review_impact_score_3 ... ok
+test test::test_negative_review_impact_score_1 ... ok
+test test::test_downvote_no_subject_impact ... ok
+test test::test_upvote_impact_full_cycle ... ok
+test test::test_initial_impact_on_creation ... ok
+test test::test_accumulation_multiple_votes ... ok
+test test::test_invalid_score_rejected_high - should panic ... ok
+test test::test_invalid_score_rejection_low - should panic ... ok
+test test::test_prevent_double_voting - should panic ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.37s
+```
+
+---
+
+## 📄 License
+This project is open-source under the MIT License.
