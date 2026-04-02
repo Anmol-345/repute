@@ -129,7 +129,7 @@ function App() {
                   onClick={() => setActiveTab(tab)}
                   className={`h-10 px-4 text-sm font-semibold capitalize border-b-2 -mb-px transition-all ${
                     activeTab === tab
-                      ? "border-[#000000] text-[#000000]"
+                      ? "border-foreground text-foreground"
                       : "border-transparent text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -158,7 +158,7 @@ function App() {
                 {searchQuery && (
                   <div className="flex items-center justify-between px-1">
                     <p className="text-xs text-muted font-medium italic">
-                      Showing reviews for: <span className="font-mono text-[#000000]">{searchQuery}</span>
+                      Showing reviews for: <span className="font-mono text-foreground">{searchQuery}</span>
                     </p>
                     <button 
                       onClick={() => setSearchQuery("")}

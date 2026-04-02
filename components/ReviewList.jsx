@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import ReviewCard from "./ReviewCard";
+import ReviewModal from "./ReviewModal";
 
 export default function ReviewList({ reviews, loading, onVoted, onReviewClick }) {
+  const [modalReview, setModalReview] = useState(null);
   if (loading) {
     return (
       <div className="space-y-3">
@@ -36,10 +39,25 @@ export default function ReviewList({ reviews, loading, onVoted, onReviewClick })
   }
 
   return (
-    <div className="space-y-3">
-      {reviews.map((review) => (
-        <ReviewCard key={review.id} review={review} onVoted={onVoted} onReviewClick={onReviewClick} />
-      ))}
-    </div>
+    <>
+      <div className="space-y-3">
+        {reviews.map((review) => (
+          <ReviewCard 
+            key={review.id} 
+            review={review} 
+            onVoted={onVoted} 
+            onReviewClick={onReviewClick} 
+            onOpenModal={() => setModalReview(review)}
+          />
+        ))}
+      </div>
+      
+      <ReviewModal 
+        review={modalReview} 
+        isOpen={!!modalReview} 
+        onClose={() => setModalReview(null)} 
+        onReviewClick={onReviewClick} 
+      />
+    </>
   );
 }

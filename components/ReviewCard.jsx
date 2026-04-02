@@ -11,11 +11,14 @@ const SCORE_COLORS = {
   5: { dot: "#10b981", bg: "#ecfdf5", text: "#047857" },
 };
 
-export default function ReviewCard({ review, onVoted, onReviewClick }) {
+export default function ReviewCard({ review, onVoted, onReviewClick, onOpenModal }) {
   const palette = SCORE_COLORS[review.score] ?? SCORE_COLORS[3];
 
   return (
-    <article className="rounded-xl border border-border bg-card p-5 sm:p-6 hover:border-border-strong transition-all hover:shadow-sm group">
+    <article 
+      onClick={() => onOpenModal?.()}
+      className="cursor-pointer rounded-xl border border-border bg-card p-5 sm:p-6 hover:border-border-strong transition-all hover:shadow-sm group"
+    >
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
         <div className="flex items-center gap-3 min-w-0">
           <div className="flex -space-x-3 group-hover:-space-x-1 transition-all">
@@ -26,7 +29,10 @@ export default function ReviewCard({ review, onVoted, onReviewClick }) {
             <div className="flex items-center gap-1.5 mb-0.5">
               <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">Subject</span>
               <button 
-                onClick={() => onReviewClick?.(review.subject)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onReviewClick?.(review.subject);
+                }}
                 className="text-xs font-mono font-medium text-foreground truncate hover:text-accent-blue hover:underline transition-colors"
               >
                 {shortenAddress(review.subject, 6)}
@@ -35,7 +41,10 @@ export default function ReviewCard({ review, onVoted, onReviewClick }) {
             <div className="flex items-center gap-1.5">
               <span className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground">By</span>
               <button 
-                onClick={() => onReviewClick?.(review.author)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onReviewClick?.(review.author);
+                }}
                 className="text-[11px] font-mono text-muted truncate hover:text-accent-blue hover:underline transition-colors"
               >
                 {shortenAddress(review.author, 4)}
@@ -59,9 +68,11 @@ export default function ReviewCard({ review, onVoted, onReviewClick }) {
         </div>
       </div>
 
-      <p className="text-sm text-[#3f3f46] leading-relaxed mb-4">{review.content}</p>
+      <p className="text-sm text-foreground leading-relaxed mb-4 line-clamp-3">{review.content}</p>
 
-      <VoteButtons review={review} onVoted={onVoted} />
+      <div onClick={(e) => e.stopPropagation()}>
+        <VoteButtons review={review} onVoted={onVoted} />
+      </div>
     </article>
   );
 }
